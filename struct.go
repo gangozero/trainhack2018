@@ -40,3 +40,17 @@ type PostOrderRequest struct {
 type PostOrderResponse struct {
 	ID string `json:"id"`
 }
+
+type TaskItem struct {
+	Train       string      `json:"train"`
+	Carriage    string      `json:"carriage"`
+	Station     string      `json:"station"`
+	RepeatOrder bool        `json:"repeat_order"`
+	Delivery    bool        `json:"delivery"`
+	Order       []OrderItem `json:"order"`
+	ArrivalTime int64       `json:"arrival_time"`
+}
+
+type GetTaskListResponse struct {
+	Tasks []TaskItem `json:"tasks"`
+}

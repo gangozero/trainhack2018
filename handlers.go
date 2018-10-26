@@ -92,3 +92,31 @@ func (s *server) handelOrder() func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(result))
 	}
 }
+
+func (s *server) handelTasks() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			http.Error(w, "Invalid request method.", 405)
+			return
+		}
+
+		tasks, err := getTaskList(s.db)
+		if err != nil {
+			log.Printf("Can't get task list: %s", err.Error())
+			http.Error(w, "Can't get task list", 500)
+			return
+		}
+
+		if tasks == nil || len(tasks.Tasks) == 0 {
+			http.Error(w, "Not Found", 404)
+			return
+		}
+		result, err := json.Marshal(tasks)
+		if err != nil {
+			log.Printf("Can't encode response: %s", err.Error())
+			http.Error(w, "Can't encode response", 500)
+			return
+		}
+		fmt.Fprintf(w, string(result))
+	}
+}
