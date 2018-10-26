@@ -1,0 +1,23 @@
+.screen,.hide{
+    display:none;
+}
+
+#map{
+    height:300px;
+}
+
+.btn-wide{
+    width:90%;
+    margin-top:20px;
+}
+
+#choose-coffee,#choose-delivery{
+    padding:20px;
+}
+
+.footer{
+    position:fixed;
+    bottom:10px;
+    left:0px;
+    right:0px;
+}

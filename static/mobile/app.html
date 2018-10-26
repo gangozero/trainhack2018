@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.8.94/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="app.css">
+    <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+    integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+    crossorigin=""></script>
+    <script src="app.js"></script>
+</head>
+<body>
+    <div id="screen_map" class="screen">
+        <div id="station_selector" class="columns col-oneline">
+            <div class="column col-2">
+                <button class="btn btn-link" id="prev-station"><i class="mdi mdi-chevron-left mdi-36px"></i></button>
+            </div>
+            <div class="column col-8 text-center" id="station-info">
+                <div class="station_title"></div> 
+                <div class="station_time"></div>
+            </div>
+            <div class="column col-2">
+                    <button class="btn btn-link" id="next-station"><i class="mdi mdi-chevron-right mdi-36px"></i></button>
+            </div>
+        </div>
+        <div id="map"></div>
+        
+        <div class="text-center" id="order-buttons">
+                <div><button class="btn btn-primary btn-lg btn-wide order-button" id="order-coffee">Order Coffee</button></div>
+                <div><button class="btn btn-primary btn-lg btn-wide order-button" id="order-food">Order Food</button></div>
+        </div>
+
+        <div id="choose-coffee" class="hide text-center">
+                
+                <div class="form-group text-left">
+                    <label class="form-label">Choose your coffee</label>
+                    <div id="coffee-list"></div>
+                </div>
+
+                <div><button class="btn btn-lg btn-wide" id="add-coffee">+ Add another coffee</button></div>
+
+                <div class="footer"><button class="btn btn-primary btn-lg btn-wide" id="go-deliver-choose">Next</button></div>
+        </div>
+
+        <div id="choose-delivery" class="hide">
+                
+                <div class="btn-group btn-group-block" id="deliver-type" data-type="myself">
+                        <button class="btn deliver-picker" id="deliver-myself">Pick myself</button>
+                        <button class="btn deliver-picker" id="deliver-deliver">Deliver</button>
+                </div> 
+
+                <div class="form-group mt-2">
+                    <label class="form-switch">
+                        <input type="checkbox" id="repeat" value="repeat">
+                        <i class="form-icon"></i> Create recurrent pattern
+                    </label>
+                </div>
+       
+
+                <div class="footer text-center"><button class="btn btn-primary btn-lg btn-wide" id="go-checkout">Proceed with checkout</button></div>
+        </div>
+    </div>
+
+    
+
+    <div id="screen_loading" class="screen">
+        <div class="text-center mt-2">
+            <span class="loading"></span>
+        </div>
+    </div>
+
+    <div id="screen_payment" class="screen">
+            <div class="empty">
+            <div class="empty-icon">
+                <i class="mdi mdi-credit-card mdi-48px"></i>
+            </div>
+            <p class="empty-title h5">Payment processing...</p>
+            <p class="empty-subtitle">Please wait when paymnet will be completed.</p>
+            <div class="loading loading-lg mt-2"></div>
+            </div>
+            
+    </div>
+
+    <div id="screen_success" class="screen">
+            <div class="empty">
+            <div class="empty-icon">
+                <i class="mdi mdi-coffee mdi-48px"></i>
+            </div>
+            <p class="empty-title h5">Success!</p>
+            <p class="empty-subtitle">Your order has been placed, please show this screen at the coffee shop or to the courier</p>
+            <p> </p>
+            <div id="qrcode"></div>
+            </div>
+    </div>
+<div id="templates" class="hide">
+    <select  class="form-select" id="coffee-type-template">
+        <option value="Espresso">Espresso</option>
+        <option value="Cappucinno">Cappuccino</option>
+        <option value="Latte">Latte</option>
+        <option value="Caffee crema">Caffee crema</option>
+        <option value="Tea">Tea</option>
+    </select>
+</div>
+</body>
+</html>
