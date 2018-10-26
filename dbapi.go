@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/jackc/pgx"
 )
@@ -246,4 +247,74 @@ func createOrder(pool *pgx.ConnPool, req *PostOrderRequest) (*PostOrderResponse,
 	}
 
 	return &PostOrderResponse{ID: id}, nil
+}
+
+func getTaskList(pool *pgx.ConnPool) (*GetTaskListResponse, error) {
+	conn, err := pool.Acquire()
+	if err != nil {
+		log.Printf("Can't acquire DB connection from pool: %s", err.Error())
+		return nil, fmt.Errorf("Can't acquire DB connection from pool")
+	}
+	defer pool.Release(conn)
+
+	tx, err := conn.Begin()
+	if err != nil {
+		log.Printf("Can't start transaction: %s", err.Error())
+		return nil, fmt.Errorf("Can't start transaction")
+	}
+	defer deferRollbackAndLog(tx)
+
+	query := `
+	SELECT train, carriage, station, repeat_order, delivery, ord, ts_ready
+	FROM orders
+	-- WHERE ts_ready >= NOW() - interval '10 minutes'
+	;`
+
+	rows, err := tx.Query(query)
+
+	if err != nil {
+		log.Printf("Error getting list of tasks: %s", err.Error())
+		return nil, fmt.Errorf("Error getting list of tasks")
+	}
+	defer rows.Close()
+
+	tasks := []TaskItem{}
+
+	for rows.Next() {
+		var train, carriage, station string
+		var repeatOrder, delivery bool
+		var ord []OrderItem
+		var ts time.Time
+
+		err = rows.Scan(&train, &carriage, &station, &repeatOrder, &delivery, &ord, &ts)
+		if err != nil {
+			log.Printf("Error scanning tasks: %s", err.Error())
+			return nil, fmt.Errorf("Error scanning task")
+		}
+
+		task := TaskItem{
+			Train:       train,
+			Carriage:    carriage,
+			Station:     station,
+			RepeatOrder: repeatOrder,
+			Delivery:    delivery,
+			Order:       ord,
+			ArrivalTime: ts.Unix(),
+		}
+
+		tasks = append(tasks, task)
+
+		log.Printf("Task: %+v", task)
+
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Printf("Error commiting transaction: %s", err.Error())
+		return nil, fmt.Errorf("Error commiting transaction")
+	}
+
+	return &GetTaskListResponse{
+		Tasks: tasks,
+	}, nil
 }

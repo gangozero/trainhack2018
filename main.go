@@ -34,6 +34,7 @@ func main() {
 
 	http.HandleFunc("/list", s.handelList())
 	http.HandleFunc("/order", s.handelOrder())
+	http.HandleFunc("/tasks", s.handelTasks())
 	http.Handle("/static/", http.FileServer(FS(false)))
 	log.Printf("Starting server on port %s", os.Getenv("PORT"))
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
