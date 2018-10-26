@@ -211,3 +211,39 @@ func cleanName(name string) string {
 	tmp := strings.Replace(name, "Centralstation", "C", -1)
 	return strings.Replace(tmp, " station", "", -1)
 }
+
+func createOrder(pool *pgx.ConnPool, req *PostOrderRequest) (*PostOrderResponse, error) {
+	conn, err := pool.Acquire()
+	if err != nil {
+		log.Printf("Can't acquire DB connection from pool: %s", err.Error())
+		return nil, fmt.Errorf("Can't acquire DB connection from pool")
+	}
+	defer pool.Release(conn)
+
+	tx, err := conn.Begin()
+	if err != nil {
+		log.Printf("Can't start transaction: %s", err.Error())
+		return nil, fmt.Errorf("Can't start transaction")
+	}
+	defer deferRollbackAndLog(tx)
+
+	query := `
+	INSERT INTO orders (train, carriage, station, repeat_order, delivery, ord) 
+	VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;
+	`
+
+	var id string
+	err = tx.QueryRow(query, req.Train, req.Carriage, req.Station, req.RepeatOrder, req.Delivery, req.Order).Scan(&id)
+	if err != nil {
+		log.Printf("Cannot insert new order to DB: %s", err.Error())
+		return nil, fmt.Errorf("Cannot insert new order to DB")
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Printf("Error commiting transaction: %s", err.Error())
+		return nil, fmt.Errorf("Error commiting transaction")
+	}
+
+	return &PostOrderResponse{ID: id}, nil
+}

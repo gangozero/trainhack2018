@@ -57,3 +57,38 @@ func (s *server) handelList() func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(result))
 	}
 }
+
+func (s *server) handelOrder() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			http.Error(w, "Invalid request method.", 405)
+			return
+		}
+		decoder := json.NewDecoder(r.Body)
+		var req PostOrderRequest
+		err := decoder.Decode(&req)
+		if err != nil {
+			log.Printf("Can't decode input request: %s", err.Error())
+			http.Error(w, "Can't decode input request", 500)
+			return
+		}
+		if req.Train == "" {
+			http.Error(w, "train can't be empty", 400)
+			return
+		}
+		resp, err := createOrder(s.db, &req)
+		if err != nil {
+			log.Printf("Can't create new order: %s", err.Error())
+			http.Error(w, "Can't create new order", 500)
+			return
+		}
+
+		result, err := json.Marshal(resp)
+		if err != nil {
+			log.Printf("Can't encode response: %s", err.Error())
+			http.Error(w, "Can't encode response", 500)
+			return
+		}
+		fmt.Fprintf(w, string(result))
+	}
+}

@@ -20,5 +20,23 @@ type GetStationsListResponse struct {
 
 type GetStationsListRequest struct {
 	Train    string `json:"train"`
-	Carriage string `json:"carriage,omitempty"`
+	Carriage string `json:"carriage"`
+}
+
+type OrderItem struct {
+	CoffeeType string `json:"coffee_type"`
+	Number     int    `json:"number"`
+}
+
+type PostOrderRequest struct {
+	Train       string      `json:"train"`
+	Carriage    string      `json:"carriage"`
+	Station     string      `json:"station"`
+	RepeatOrder bool        `json:"repeat_order"`
+	Delivery    bool        `json:"delivery"`
+	Order       []OrderItem `json:"order"`
+}
+
+type PostOrderResponse struct {
+	ID string `json:"id"`
 }
