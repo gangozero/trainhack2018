@@ -2,7 +2,7 @@
 
 
 $( document ).ready(function() {
-
+    getTrainID();
     showScreen('loading');
     loadMap();
 });
@@ -50,6 +50,9 @@ function getUserLocatiion(){
 
 function getTrainID(){
     // will be code to get Train ID from beacon in the carriage
+    var url = new URL(window.location.href);
+    var c = url.searchParams.get("t");
+    if(c != null) return c;
     return "75"
 }
 
