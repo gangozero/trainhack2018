@@ -240,6 +240,17 @@ func createOrder(pool *pgx.ConnPool, req *PostOrderRequest) (*PostOrderResponse,
 		return nil, fmt.Errorf("Cannot insert new order to DB")
 	}
 
+	ts, err := getTime(req.Station, req.Train)
+	if err != nil {
+		log.Printf("Cannot get arrival time from ResRobot: %s", err.Error())
+	} else {
+		_, err = tx.Exec("UPDATE orders SET ts_ready=$1 WHERE id=$2", ts, id)
+		if err != nil {
+			log.Printf("Cannot update arrival time: %s", err.Error())
+			return nil, fmt.Errorf("Cannot update arrival time")
+		}
+	}
+
 	err = tx.Commit()
 	if err != nil {
 		log.Printf("Error commiting transaction: %s", err.Error())
@@ -303,9 +314,6 @@ func getTaskList(pool *pgx.ConnPool) (*GetTaskListResponse, error) {
 		}
 
 		tasks = append(tasks, task)
-
-		log.Printf("Task: %+v", task)
-
 	}
 
 	err = tx.Commit()
