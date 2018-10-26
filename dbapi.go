@@ -188,9 +188,9 @@ func getStationList(pool *pgx.ConnPool, trainID string) (*GetStationsListRespons
 				Time:   arrival,
 			}
 			if seq%4 == 0 || seq%5 == 0 {
-				st.IsCofee = 0
+				st.IsCoffee = 0
 			} else {
-				st.IsCofee = 1
+				st.IsCoffee = 1
 			}
 			sts = append(sts, st)
 		}

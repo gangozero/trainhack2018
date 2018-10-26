@@ -6,12 +6,12 @@ type Geo struct {
 }
 
 type Station struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	IsCofee int    `json:"is_cofee"`
-	IsFood  int    `json:"is_food"`
-	Geo     Geo    `json:"geo"`
-	Time    int    `json:"time"`
+	ID       string `json:"id"`
+	Title    string `json:"title"`
+	IsCoffee int    `json:"is_coffee"`
+	IsFood   int    `json:"is_food"`
+	Geo      Geo    `json:"geo"`
+	Time     int    `json:"time"`
 }
 
 type GetStationsListResponse struct {

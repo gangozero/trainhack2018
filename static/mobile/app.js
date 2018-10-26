@@ -8,12 +8,12 @@ $( document ).ready(function() {
 });
 
 // System section
-var APIURL = 'https://trainhack2018.eu-de.mybluemix.net'
+var APIURL = ''
 function getJSON(endpoint,data,func){
 	var json_r = JSON.stringify(data);
     console.log("[DEBUG:JsonAPI] Request: \r\n" + json_r);
 
-    $.post(APIURL+'/'+endpoint,encodeURIComponent(json_r))
+    $.post(APIURL+'/'+endpoint,json_r)
         .done(function(resp){
             console.log("[DEBUG:JsonAPI] Answer: \r\n" + resp);
             try {
@@ -50,12 +50,12 @@ function getUserLocatiion(){
 
 function getTrainID(){
     // will be code to get Train ID from beacon in the carriage
-    return 74
+    return "75"
 }
 
 function getCarriage(){
     // will be code to get carriage number from the beacon in the carriage
-    return 2
+    return "2"
 }
 
 
@@ -66,7 +66,7 @@ function loadMap(){
     getListOfStations(function(list){
 
         $.each(list.stations,function(k,st){
-            var marker = L.marker([st.geo.lat, st.geo.lng]).addTo(map);
+            var marker = L.marker([st.geo.lat, st.geo.lon]).addTo(map);
         });
 
         var i = 0;
@@ -135,7 +135,7 @@ function setStation(map,list,num){
     if(num < (list.length-1)) $('#next-station').prop('disabled',false);
 
 
-    map.setView([st.geo.lat,st.geo.lng],15);
+    map.setView([st.geo.lat,st.geo.lon],15);
 }
 
 

@@ -8,6 +8,8 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
+//go:generate esc -o static.go -pkg main static
+
 func main() {
 	log.Println("App started")
 
@@ -31,6 +33,7 @@ func main() {
 	s := newServer(pool)
 
 	http.HandleFunc("/list", s.handelList())
+	http.Handle("/static/", http.FileServer(FS(false)))
 	log.Printf("Starting server on port %s", os.Getenv("PORT"))
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
