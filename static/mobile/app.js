@@ -53,7 +53,7 @@ function getTrainID(){
     var url = new URL(window.location.href);
     var c = url.searchParams.get("t");
     if(c != null) return c;
-    return "75"
+    return "270"
 }
 
 function getCarriage(){
