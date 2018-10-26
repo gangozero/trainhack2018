@@ -1,0 +1,6 @@
+---
+applications:
+  - name: trainhack2018
+    env:
+      GOVERSION: go1.10
+      GOPACKAGENAME: github.com/repa40x/trainhack2018

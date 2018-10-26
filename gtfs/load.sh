@@ -1,0 +1,1 @@
+psql --host=<db_host> --port=<port> --username=<db_username> --dbname=<dbname> --file=schema.sql --password
