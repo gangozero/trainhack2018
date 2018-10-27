@@ -58,7 +58,7 @@ function loadTasks(){
 
             var action = "Wait"
             var diff = task.arrival_time-Math.floor(Date.now() / 1000);
-            if(task.deliver && diff <= 5*60) {action = "Go to the train"; tr.addClass('go-train')}
+            if(task.deliver && diff <= 10*3600) {action = "Go to the train"; tr.addClass('go-train')}
             if(!task.deliver && diff <= 1*60) {action = "Start brewing";  tr.addClass('start-brewing')}
             if(diff < 0) {action = "Completed";  tr.removeClass('start-brewing').removeClass('go-train')}
 
