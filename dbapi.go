@@ -278,7 +278,8 @@ func getTaskList(pool *pgx.ConnPool) (*GetTaskListResponse, error) {
 	query := `
 	SELECT train, carriage, station, repeat_order, delivery, ord, ts_ready
 	FROM orders
-	-- WHERE ts_ready >= NOW() - interval '10 minutes'
+	WHERE ts_ready >= NOW() - interval '60 minutes'
+	ORDER BY ts_ready
 	;`
 
 	rows, err := tx.Query(query)

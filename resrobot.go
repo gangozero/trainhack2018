@@ -68,7 +68,7 @@ func getTime(stationID string, trainID string) (time.Time, error) {
 
 	for _, b := range board.Arrival {
 		if b.TransportNumber == trainID {
-			joinTime := fmt.Sprintf("%sT%s-02:00", b.Date, b.Time)
+			joinTime := fmt.Sprintf("%sT%s+02:00", b.Date, b.Time)
 			tp, err := time.Parse(time.RFC3339, joinTime)
 			if err != nil {
 				return time.Now(), fmt.Errorf("Error parsing time: %s", err.Error())
