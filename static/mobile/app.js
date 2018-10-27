@@ -12,7 +12,7 @@ var APIURL = ''
 function getJSON(endpoint,data,func){
 	var json_r = JSON.stringify(data);
     console.log("[DEBUG:JsonAPI] Request: \r\n" + json_r);
-    //if(endpoint == 'list') return func({"stations":[{"id":"740000105","title":"Ånge","is_coffee":0,"is_food":0,"geo":{"lat":62.523268,"lon":15.658427},"time":1087},{"id":"740000210","title":"Gävle C","is_coffee":1,"is_food":0,"geo":{"lat":60.676245,"lon":17.151188},"time":13027},{"id":"740000005","title":"Uppsala C","is_coffee":0,"is_food":0,"geo":{"lat":59.858534,"lon":17.646086},"time":20767},{"id":"740000556","title":"Arlanda C","is_coffee":1,"is_food":0,"geo":{"lat":59.64957,"lon":17.929186},"time":22387},{"id":"740000001","title":"Stockholm C","is_coffee":0,"is_food":0,"geo":{"lat":59.33014,"lon":18.058155},"time":23887}]});
+    if(endpoint == 'list') return func({"stations":[{"id":"740000105","title":"Ånge","is_coffee":0,"is_food":0,"geo":{"lat":62.523268,"lon":15.658427},"time":1087},{"id":"740000210","title":"Gävle C","is_coffee":1,"is_food":0,"geo":{"lat":60.676245,"lon":17.151188},"time":13027},{"id":"740000005","title":"Uppsala C","is_coffee":0,"is_food":0,"geo":{"lat":59.858534,"lon":17.646086},"time":20767},{"id":"740000556","title":"Arlanda C","is_coffee":1,"is_food":0,"geo":{"lat":59.64957,"lon":17.929186},"time":22387},{"id":"740000001","title":"Stockholm C","is_coffee":0,"is_food":0,"geo":{"lat":59.33014,"lon":18.058155},"time":23887}]});
     $.post(APIURL+'/'+endpoint,json_r)
         .done(function(resp){
             console.log("[DEBUG:JsonAPI] Answer: \r\n" + resp);
@@ -31,9 +31,10 @@ function getJSON(endpoint,data,func){
 }
 
 
-function showScreen(id){
+function showScreen(id,callback){
+    var callback = callback || function(){}
     $(".screen").hide(0);
-    $('#screen_'+id).fadeIn(500);
+    $('#screen_'+id).fadeIn(500,function(){callback()});
 }
 
 function getUserLocatiion(){
@@ -63,6 +64,18 @@ function getCarriage(){
 
 
 // Start app section
+function initMap(){
+	var mapCont = $('#map');
+
+	var theMap = L.map(mapCont.attr('id'));
+	L.control.attribution({prefix:''}).addTo(theMap);  
+
+    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19
+	}).addTo(theMap);
+    theMap.setView([0,0], 13);
+    return theMap;
+}
 
 function loadMap(){
     var map = initMap();
@@ -116,7 +129,7 @@ function loadMap(){
             });
         });
 
-        showScreen('map');
+        showScreen('map',function(){map.invalidateSize();});
     });
 
     //  getUserLocatiion();
@@ -126,7 +139,18 @@ function setStation(map,list,num){
     var st = list[num]
 
     $('.station_title').text('Next station: '+st.title);
-    $('.station_time').text('in ' + Math.round(st.time/60) + ' min.');
+    var time = ''
+    var m = Math.round(st.time/60)
+    if(st.time <= 3600) 
+        time = 'in '+m+' min.'
+    else
+    {
+        var h = Math.floor(m/60);
+        m = m - h*60
+        time = 'in '+h+'h '+m+'m'
+    }
+    
+    $('.station_time').text(time);
     $('.order-button').prop('disabled', true);
     $('#station-info').data('station-id',st.id).data('station-title',st.title).data('station-time',st.time);
     $('#prev-station,#next-station').prop('disabled', true);
@@ -139,20 +163,6 @@ function setStation(map,list,num){
 
 
     map.setView([st.geo.lat,st.geo.lon],15);
-}
-
-
-function initMap(){
-	var mapCont = $('#map');
-
-	var theMap = L.map(mapCont.attr('id'));
-	L.control.attribution({prefix:''}).addAttribution('&copy; Gangozero | &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>').addTo(theMap);  
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		maxZoom: 19
-	}).addTo(theMap);
-    theMap.setView([0,0], 19);
-    return theMap;
 }
 
 function getListOfStations(callback){
