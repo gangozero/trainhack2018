@@ -58,9 +58,13 @@ function loadTasks(){
 
             var action = "Wait"
             var diff = task.arrival_time-Math.floor(Date.now() / 1000);
+            var diff2 = task.create_time-Math.floor(Date.now() / 1000);
             if(task.deliver && diff <= 10*3600) {action = "Go to the train"; tr.addClass('go-train')}
             if(!task.deliver && diff <= 1*60) {action = "Start brewing";  tr.addClass('start-brewing')}
+            if(diff2 < 30) { tr.addClass('start-brewing')}
             if(diff < 0) {action = "Completed";  tr.removeClass('start-brewing').removeClass('go-train')}
+
+            
 
             tr.append($('<td>').text(action));
 

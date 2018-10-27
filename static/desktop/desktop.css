@@ -1,11 +1,15 @@
 .go-train{
-    background-color: rgb(255, 170, 34)
+    background-color: rgb(255, 223, 170)
 }
 
 .start-brewing{
-    background-color: rgb(148, 221, 255)
+    background-color: rgb(199, 237, 255)
 }
 
 .completed{
     background-color: rgb(240, 240, 240)
+}
+
+.new{
+    background-color: rgb(213, 255, 207)
 }
