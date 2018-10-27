@@ -27,7 +27,7 @@ func getTime(stationID string, trainID string) (time.Time, error) {
 	params := map[string]string{
 		"key":         key,
 		"id":          stationID,
-		"maxJourneys": "50",
+		"maxJourneys": "100",
 		"format":      "json",
 		"operators":   "74",
 		"passlist":    "0",
