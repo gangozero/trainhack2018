@@ -49,6 +49,7 @@ type TaskItem struct {
 	Delivery    bool        `json:"delivery"`
 	Order       []OrderItem `json:"order"`
 	ArrivalTime int64       `json:"arrival_time"`
+	CreateTime  int64       `json:"create_time"`
 }
 
 type GetTaskListResponse struct {

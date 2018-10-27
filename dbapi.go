@@ -276,7 +276,7 @@ func getTaskList(pool *pgx.ConnPool) (*GetTaskListResponse, error) {
 	defer deferRollbackAndLog(tx)
 
 	query := `
-	SELECT train, carriage, station, repeat_order, delivery, ord, ts_ready
+	SELECT train, carriage, station, repeat_order, delivery, ord, ts_created, ts_ready
 	FROM orders
 	WHERE ts_ready >= NOW() - interval '60 minutes'
 	ORDER BY ts_ready
@@ -296,9 +296,9 @@ func getTaskList(pool *pgx.ConnPool) (*GetTaskListResponse, error) {
 		var train, carriage, station string
 		var repeatOrder, delivery bool
 		var ord []OrderItem
-		var ts time.Time
+		var ts, tsCreated time.Time
 
-		err = rows.Scan(&train, &carriage, &station, &repeatOrder, &delivery, &ord, &ts)
+		err = rows.Scan(&train, &carriage, &station, &repeatOrder, &delivery, &ord, &tsCreated, &ts)
 		if err != nil {
 			log.Printf("Error scanning tasks: %s", err.Error())
 			return nil, fmt.Errorf("Error scanning task")
@@ -312,6 +312,7 @@ func getTaskList(pool *pgx.ConnPool) (*GetTaskListResponse, error) {
 			Delivery:    delivery,
 			Order:       ord,
 			ArrivalTime: ts.Unix(),
+			CreateTime:  tsCreated.Unix(),
 		}
 
 		tasks = append(tasks, task)
